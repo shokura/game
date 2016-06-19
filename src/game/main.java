@@ -12,28 +12,47 @@ import java.util.Scanner;
 public class main {
 
 	static String name = "勇者";// 名前
-	static int lv;// プレイヤーレベル
+	static int lv = 30;// プレイヤーレベル
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//コンソールに入力
-		Scanner s = new Scanner(System.in);
-
-		if (s.nextInt() == 0) {
-			lv = 30;
-		} else {
-			lv= 100;
-		}
-
 		putJyosyou();// 序章
+
+		putCommand();// 入力
 
 		if (lv < 40) {
 			putGameOver();
 		} else {
 			putGameClear();
 		}
+	}
+
+	public static void putCommand() {
+		System.out.println("1,魔王を倒しにいく");
+		System.out.println("2.修行する");
+		int c = inputCommand();
+		if (c == 1) {
+			System.out.println("魔王が現れた！！");
+		} else if (c == 2) {
+			lv += 5;
+			System.out.println("レベルが" + lv + "になった");
+			putCommand();
+		}
+	}
+
+	public static int inputCommand() {
+		// コンソールに入力
+		Scanner s = new Scanner(System.in);
+		//	入力値をint型で格納
+		int addLv = s.nextInt();
+
+		if (addLv != 2 && addLv != 1) {
+			System.out.println("正しい値を入力してください=" + addLv);
+			putCommand();
+		}
+		return addLv;
 	}
 
 	public static void putJyosyou() {
