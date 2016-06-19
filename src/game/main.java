@@ -4,7 +4,10 @@
 package game;
 
 import java.util.Scanner;
-
+/*
+ * 次はpart18
+ *
+ * */
 /**
  * @author zeru
  *
@@ -13,82 +16,101 @@ public class main {
 
 	static String name = "勇者";// 名前
 	static int lv = 30;// プレイヤーレベル
+	static int hp = 30;// プレイヤーＨＰ
+	static double gold = 50.0; // プレイヤー所持金
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		putJyosyou();// 序章
+		Console.putJyosyou();// 序章
 
 		putCommand();// 入力
 
+		if (hp <= 0) {
+			return;// ここでプログラムが終了する
+		}
+
+		// 魔王を倒しにいく
 		if (lv < 40) {
-			putGameOver();
+			Console.putGameOver();
 		} else {
-			putGameClear();
+			Console.putGameClear();
 		}
 	}
 
+	// コマンド選択
 	public static void putCommand() {
-		System.out.println("1,魔王を倒しにいく");
-		System.out.println("2.修行する");
+		Console.put("1,魔王を倒しにいく");
+		Console.put("2.修行する");
+		Console.put("3.宿屋に泊まる");
 		int c = inputCommand();
-		if (c == 1) {
-			System.out.println("魔王が現れた！！");
-		} else if (c == 2) {
-			lv += 5;
-			System.out.println("レベルが" + lv + "になった");
+		switch (c) {
+		case 1:
+			Console.put("魔王が現れた！！");
+			break;
+		case 2:
+			syugyou();
+			break;
+		case 3:
+			if (gold >= 10) {
+				hp = lv;
+				gold -= 10;
+			}
+			Console.putStatus();
 			putCommand();
+			break;
 		}
 	}
 
+	// コンソール入力
 	public static int inputCommand() {
 		// コンソールに入力
 		Scanner s = new Scanner(System.in);
-		//	入力値をint型で格納
+		// 入力値をint型で格納
 		int addLv = s.nextInt();
 
-		if (addLv != 2 && addLv != 1) {
-			System.out.println("正しい値を入力してください=" + addLv);
+		if (addLv < 1 && addLv > 3) {
+			Console.put("正しい値を入力してください=" + addLv);
 			putCommand();
 		}
 		return addLv;
 	}
 
-	public static void putJyosyou() {
-		put("魔王が" + "世界を滅ぼそうとしています");
-		put(name + "はレベル" + lv + "のツワモノです");
-	}
+	// 修行
+	public static void syugyou() {
+		java.util.Random r = new java.util.Random();
 
-	public static void putGameOver() {
-		put(name + "は魔王をやぶれました");
-		put("GAME OVER");
-	}
+		// 敵出現
+		int exp = r.nextInt(5) + 1;
+		Console.put("敵が" + exp + "匹、現れた");
 
-	public static void putGameClear() {
+		String enemy = "  щ(｀ω´щ)";
+		String s = "";
 
-		System.out.println(name + "は魔王を倒しました");
-		if (lv > 200) {
-			put("レベル" + lv + "なので魔王はゴミでした");
-		} else if (lv > 120) {
-			put("レベル" + lv + "なので魔王は弱すぎでした");
-		} else if (lv > 80) {
-			put("レベル" + lv + "なので余裕でした");
-		} else if (lv > 50) {
-			put("レベル" + lv + "でしたが倒せました");
-		} else {
-			put("レベル" + lv + "でしたので苦戦しました");
+		for (int i = 0; i < exp; i++) {
+			s = s + enemy;
 		}
-		put("GAME CLEAR");
+		Console.put(s);
+
+		// HPを減らす
+		int damage = r.nextInt(8);
+		hp -= damage;
+		Console.putStatus();
+		if (hp < 0) {
+			hp = 0;
+		}
+		// レベル上昇
+		lv += exp;
+		Console.put(name + "は、" + damage + "ポイントのダメージを受けた");
+		Console.put("レベルが" + lv + "になった");
+		Console.putStatus();
+		if (hp == 0) {
+			Console.put("GAME OVER");
+		} else {
+			putCommand();
+		}
 	}
 
-	/*
-	 * 引数で指定された文字列を表示します。
-	 *
-	 * @param str 表示対象の文字列
-	 */
-	public static void put(String str) {
 
-		System.out.println(str);
-	}
 }
